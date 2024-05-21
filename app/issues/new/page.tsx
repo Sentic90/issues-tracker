@@ -1,57 +1,65 @@
 "use client";
 
-import { Button, Callout, TextField } from '@radix-ui/themes';
+import { Button, Callout, Text, TextField } from "@radix-ui/themes";
 import SimpleMDE from "react-simplemde-editor";
-import { useForm, Controller} from 'react-hook-form';
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import "easymde/dist/easymde.min.css";
-import axios from 'axios'
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation';
-import { BiInfoCircle } from 'react-icons/bi';
+import axios from "axios";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { BiInfoCircle } from "react-icons/bi";
+import { createIssueSchema } from "@/app/validationSchemas";
+import { z } from 'zod';
 
+type IssueForm = z.infer<typeof createIssueSchema>;
 
-interface IssueForm { 
-  title: string;
-  description: string;
-}
 const NewIssuePage = () => {
-  const router = useRouter()
-  const [error, setError ] = useState("")
-  const {register, control, handleSubmit} = useForm<IssueForm>()
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const { register, control, handleSubmit, formState:{ errors } } = useForm<IssueForm>({
+    resolver: zodResolver(createIssueSchema)
+  });
   return (
     <div className="max-w-xl">
-
-      { error && <Callout.Root color='red' className='mb-5'>
-      <Callout.Icon>
-    <BiInfoCircle />
-  </Callout.Icon>
-        <Callout.Text>{error}</Callout.Text>
-        </Callout.Root>}
+      {error && (
+        <Callout.Root color="red" className="mb-5">
+          <Callout.Icon>
+            <BiInfoCircle />
+          </Callout.Icon>
+          <Callout.Text>{error}</Callout.Text>
+        </Callout.Root>
+      )}
       <form
-        className='space-y-3'
+        className="space-y-3"
         onSubmit={handleSubmit(async (data) => {
           try {
-            await axios.post('/api/issues', data);
-          router.push("/issues")
+            await axios.post("/api/issues", data);
+            router.push("/issues");
           } catch (error) {
-            setError("An un expected error occured.")
+            setError("An un expected error occured.");
           }
         })}
-        >
-          <TextField.Root
-          {...register('title')}
-          className='py-5 px-4'
-          placeholder='Title of issue...'/>
-          <Controller
-          name='description'
+      >
+        <TextField.Root
+          {...register("title")}
+          className="py-5 px-4"
+          placeholder="Title of issue..."
+        />
+        {errors.title && <Text color="red" as="p">{errors.title.message}</Text>}
+        <Controller
+          name="description"
           control={control}
-          render={({ field }) => <SimpleMDE placeholder="description" {...field}/>}
-          />
-      
-          <Button>Submit New Issue</Button>
+          render={({ field }) => (
+            <SimpleMDE placeholder="description" {...field} />
+          )}
+        />
+        {errors.description && <Text color="red" as="p">{errors.description.message}</Text>}
+
+        <Button>Submit New Issue</Button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default NewIssuePage
+export default NewIssuePage;
