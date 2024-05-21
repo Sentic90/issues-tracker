@@ -12,6 +12,7 @@ import { BiInfoCircle } from "react-icons/bi";
 import { createIssueSchema } from "@/app/validationSchemas";
 import { z } from 'zod';
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 
 
 type IssueForm = z.infer<typeof createIssueSchema>;
@@ -19,9 +20,22 @@ type IssueForm = z.infer<typeof createIssueSchema>;
 const NewIssuePage = () => {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [isSubmitting, setSubmitting ] = useState(false);
   const { register, control, handleSubmit, formState:{ errors } } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema)
   });
+
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setSubmitting(true)
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (error) {
+      setSubmitting(false)
+      setError("An un expected error occured.");
+    }
+  })
   return (
     <div className="max-w-xl">
       {error && (
@@ -34,14 +48,7 @@ const NewIssuePage = () => {
       )}
       <form
         className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (error) {
-            setError("An un expected error occured.");
-          }
-        })}
+        onSubmit={onSubmit}
       >
         <TextField.Root
           {...register("title")}
@@ -58,7 +65,7 @@ const NewIssuePage = () => {
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
-        <Button>Submit New Issue</Button>
+        <Button disabled={isSubmitting}>Submit New Issue {isSubmitting && <Spinner />}</Button>
       </form>
     </div>
   );
