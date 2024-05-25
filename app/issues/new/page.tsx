@@ -1,23 +1,26 @@
 "use client";
 
-import { Button, Callout, Text, TextField } from "@radix-ui/themes";
-import SimpleMDE from "react-simplemde-editor";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import "easymde/dist/easymde.min.css";
-import axios from "axios";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { BiInfoCircle } from "react-icons/bi";
-import { createIssueSchema } from "@/app/validationSchemas";
-import { z } from 'zod';
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
-import delay from 'delay'
+import { createIssueSchema } from "@/app/validationSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Callout, TextField } from "@radix-ui/themes";
+import axios from "axios";
+import "easymde/dist/easymde.min.css";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { BiInfoCircle } from "react-icons/bi";
+import { z } from 'zod';
+import dynamic from "next/dynamic";
 
+
+// Lazy Loading ( We tell server not to load this componenet inside SSR)
+
+const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {ssr:false})
 type IssueForm = z.infer<typeof createIssueSchema>;
 
-const NewIssuePage = async () => {
+const NewIssuePage =  () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting ] = useState(false);
@@ -37,7 +40,7 @@ const NewIssuePage = async () => {
     }
   })
 
-  await delay(2000)
+  // await delay(2000)
   return (
     <div className="max-w-xl">
       {error && (
