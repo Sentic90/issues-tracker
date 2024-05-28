@@ -45,22 +45,22 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   return NextResponse.json(updatedIssue, { status: 200 });
 }
 
-// export async function DELETE(request: NextRequest, { params }: Props) {
-//   // get user from DB
-//   const user = await prisma.user.findUnique({
-//     where: {
-//       id: params.id,
-//     },
-//   });
+export async function DELETE(request: NextRequest, { params }: Props) {
+  // get user from DB
+  const issue = await prisma.issue.findUnique({
+    where: {
+      id: parseInt(params.id),
+    },
+  });
 
-//   if (!user)
-//     return NextResponse.json({ error: "User Not Found" }, { status: 404 });
+  if (!issue)
+    return NextResponse.json({ error: "Issue Not Found" }, { status: 404 });
 
-//   // Delete a user
-//   await prisma.user.delete({
-//     where: {
-//       id: user.id,
-//     },
-//   });
-//   return NextResponse.json({});
-// }
+  // Delete a user
+  await prisma.issue.delete({
+    where: {
+      id: parseInt(params.id),
+    },
+  });
+  return NextResponse.json({});
+}
