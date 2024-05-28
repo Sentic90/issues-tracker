@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 // import schema from "../schema";
 import prisma from "@/prisma/client";
 import {IssueSchema} from '@/app/validationSchemas'
+import delay from "delay";
 interface Props {
   params: { id: string };
 }
