@@ -2,7 +2,7 @@ import { Button } from '@radix-ui/themes'
 import Link from 'next/link'
 import { FaEdit } from 'react-icons/fa'
 
-const EditButtonIssue = ({ issueId}: { issueId:number}) => {
+const EditIssueButton = ({ issueId}: { issueId:number}) => {
   return (
     <Button>
     <FaEdit />
@@ -11,4 +11,4 @@ const EditButtonIssue = ({ issueId}: { issueId:number}) => {
   )
 }
 
-export default EditButtonIssue
+export default EditIssueButton
