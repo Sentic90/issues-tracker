@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 import {IssueSchema} from '@/app/validationSchemas'
 import delay from "delay";
+import authOptions from "@/app/auth/AuthOptions";
+import { getServerSession } from "next-auth";
 interface Props {
   params: { id: string };
 }
@@ -23,6 +25,10 @@ export async function GET(request: NextRequest, { params }: Props) {
 export async function PATCH(request: NextRequest, { params }: Props) {
   // validate the request body
   const body = await request.json();
+
+  const session = await getServerSession(authOptions)
+  if (!session) return NextResponse.json({error: "Unauthroized"}, {status:401})
+
 
   const validation = IssueSchema.safeParse(body);
   if (!validation.success)
@@ -47,6 +53,10 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(request: NextRequest, { params }: Props) {
+
+  const session = await getServerSession(authOptions)
+  if (!session) return NextResponse.json({error: "Unauthroized"}, {status:401})
+
   // get user from DB
   const issue = await prisma.issue.findUnique({
     where: {
