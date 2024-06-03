@@ -6,7 +6,7 @@ import IssueDetails from "./IssueDetails";
 import DeleteIssueButton from "./DeleteIssueButton";
 import authOptions from "@/app/auth/AuthOptions";
 import { getServerSession } from "next-auth";
-import AssigneUser from "./AssigneUser";
+import AssigneUser from "./AssigneeUser";
 interface Props {
   params: { id: string };
 }
