@@ -20,7 +20,6 @@ const AssigneUser = () => {
       <Select.Trigger placeholder="Assgining to..." />
       <Select.Content>
         <Select.Group>
-          <Select.Item value="">No assingee</Select.Item>
           { users.map(user => (
             <Select.Item key={user.id} value={user.id}>{user.name}</Select.Item>
           ))}
