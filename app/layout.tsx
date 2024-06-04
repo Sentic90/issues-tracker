@@ -31,7 +31,7 @@ export default function RootLayout({
       <body>
         <QueryClientProvider>
           <AuthProvider>
-            <Theme accentColor="crimson" radius="full">
+            <Theme accentColor="violet" radius="large">
               <NavBar />
               <main className="p-5">
                 <Container>{children}</Container>
