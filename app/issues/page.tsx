@@ -1,11 +1,13 @@
 import { IssueStatusBadge, Link } from "@/app/components/";
+import NextLink from "next/link";
 import prisma from "@/prisma/client";
 import { Box, Table } from "@radix-ui/themes";
 import IssuesAction from "./IssuesAction";
-import { Status } from "@prisma/client";
+import { Issue, Status } from "@prisma/client";
+import { ArrowUpIcon } from "@radix-ui/react-icons";
 
 interface Props {
-  searchParams: { status: Status };
+  searchParams: { status: Status; orderBy: keyof Issue };
 }
 const IssuesPage = async ({ searchParams }: Props) => {
   const statuses = Object.values(Status);
@@ -16,19 +18,35 @@ const IssuesPage = async ({ searchParams }: Props) => {
     where: { status },
   });
 
+  const columns: {
+    label: string;
+    value: keyof Issue;
+    className?: string;
+  }[] = [
+    { label: "Title", value: "title" },
+    { label: "Status", value: "status" },
+    { label: "Created At", value: "createdAt" },
+  ];
   return (
     <Box>
       <IssuesAction />
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell>Title</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">
-              Status
-            </Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">
-              Created At
-            </Table.ColumnHeaderCell>
+            {columns.map((column) => (
+              <Table.ColumnHeaderCell key={column.value}>
+                <NextLink
+                  href={{
+                    query: { ...searchParams, orderBy: column.value },
+                  }}
+                >
+                  {column.label}
+                </NextLink>
+                {searchParams.orderBy === column.value && (
+                  <ArrowUpIcon className="inline" />
+                )}
+              </Table.ColumnHeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
 
@@ -37,9 +55,9 @@ const IssuesPage = async ({ searchParams }: Props) => {
             <Table.Row key={issue.id}>
               <Table.Cell>
                 <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
-                <Box className="block md:hidden">
+                {/* <Box className="block md:hidden">
                   <IssueStatusBadge status={issue.status} />
-                </Box>
+                </Box> */}
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 <IssueStatusBadge status={issue.status} />
