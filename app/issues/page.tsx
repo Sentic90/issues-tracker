@@ -17,8 +17,12 @@ const IssuesPage = async ({ searchParams }: Props) => {
     className?: string;
   }[] = [
     { label: "Title", value: "title" },
-    { label: "Status", value: "status" },
-    { label: "Created At", value: "createdAt" },
+    { label: "Status", value: "status", className: "hidden md:table-cell" },
+    {
+      label: "Created At",
+      value: "createdAt",
+      className: "hidden md:table-cell",
+    },
   ];
 
   // Filtering
@@ -46,7 +50,10 @@ const IssuesPage = async ({ searchParams }: Props) => {
         <Table.Header>
           <Table.Row>
             {columns.map((column) => (
-              <Table.ColumnHeaderCell key={column.value}>
+              <Table.ColumnHeaderCell
+                key={column.value}
+                className={column.className}
+              >
                 <NextLink
                   href={{
                     query: { ...searchParams, orderBy: column.value },
