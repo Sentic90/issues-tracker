@@ -7,6 +7,8 @@ import DeleteIssueButton from "./DeleteIssueButton";
 import authOptions from "@/app/auth/AuthOptions";
 import { getServerSession } from "next-auth";
 import AssigneUser from "./AssigneeUser";
+import { title } from "process";
+import { describe } from "node:test";
 interface Props {
   params: { id: string };
 }
@@ -31,7 +33,7 @@ const IssueDetailsPage = async ({ params }: Props) => {
       <Box>
         {session && (
           <Flex direction="column" gap="4" className="max-w-xl">
-            <AssigneUser issue={issue}/>
+            <AssigneUser issue={issue} />
             <EditIssueButton issueId={issue.id} />
             <DeleteIssueButton issueId={issue.id} />
           </Flex>
@@ -40,5 +42,16 @@ const IssueDetailsPage = async ({ params }: Props) => {
     </Grid>
   );
 };
+
+export async function generateMetadata({ params }: Props) {
+  const issue = await prisma.issue.findUnique({
+    where: { id: parseInt(params.id) },
+  });
+
+  return {
+    title: `Details of Issue number ${issue?.id}`,
+    description: `a view details of issue with title ${issue?.title}`,
+  };
+}
 
 export default IssueDetailsPage;
