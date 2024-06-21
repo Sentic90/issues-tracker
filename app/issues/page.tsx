@@ -49,7 +49,6 @@ const IssuesPage = async ({ searchParams }: Props) => {
 };
 
 export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Dashboard - List of Issues",
   description: "View the list of issues with different statuses",

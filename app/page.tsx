@@ -28,6 +28,8 @@ export default async function Home() {
   );
 }
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Dashboard - Issue Tracker app",
   description: "View the main dashboard and Widgets of Issue app",
